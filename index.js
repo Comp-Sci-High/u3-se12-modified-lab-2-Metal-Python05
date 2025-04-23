@@ -1,9 +1,10 @@
 // 'npm install express' or the shorthand version 'npm i express'
-const express = require('express')
+const express = require('express');
+const { request } = require('http');
 const app = express()
 
 const data = {
-    "facts": [
+    "facts": [ 
         "Raccoons are highly intelligent animals and can remember the solution to tasks for up to three years.",
         "They are known for their dexterous front paws and can open jars, latches, and even doors.",
         "Raccoons have a unique habit of dipping their food in water before eating, which is why their scientific name is 'Procyon lotor,' meaning 'washing bear.'",
@@ -25,22 +26,40 @@ const data = {
     ]
 }
 
-// Write a GET route handler for / that uses .send() to respond with "Welcome to the Raccoon API" 
+// Add console logging middleware
 
+// Write a GET route handler for / that uses .send() to respond with "Welcome to the Raccoon API" 
+app.get("/",(request,response)=>{
+    response.send("Welcome to the Raccoon API")
+});
 
 // Write a GET route handler for /image that uses .json() to respond with the URL of the first image
+app.get("/image",(request,response)=>{
+    response.json(data.images[0])
+});
 
+// Add middleware that console logs "My name is Jayson"
+app.use((request,response,next)=>{
+    console.log("My name is Jayson")
+    next();
+})
 
 // Write a GET route handler for /fact that uses .json() to respond with the URL of the first fact
-
+app.get("/facts",(request,response)=>{
+    response.json(data.facts[0])
+});
 
 
 // Write the route handler for /api/docs that returns a message describing the two /random endpoints
 // e.g. "The endpoints you can hit are /fact for ... and /image for ..."
 // Make it  formatted with HTML h1 tags
+app.get("/api/docs",(request,response)=>{
+    response.send("The endpoints you can hit are /fact for ... and /image for ...")
+});
 
-
-
+// Add 404 Middleware
+app.use((request,response,next)=>
+{response.status(404).send("404 NOT FOUND")})
 
 app.listen(3000, () => {
     console.log("Server is running at localhost:3000")
